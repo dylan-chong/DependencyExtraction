@@ -5,12 +5,12 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import topViewDE.logic.Model;
+import topViewDE.model.ModelMap;
 
 
 public class Main {
   private static void createAndShowGUI() {
-    Game g=new Game(new Model());
+    Game g=new Game(new ModelMap());
     JFrame frame = new JFrame("MAP");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.getContentPane().add(new GameMap(g));

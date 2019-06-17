@@ -1,8 +1,8 @@
-package topViewDE.logic;
+package topViewDE.model;
 
 import java.util.Random;
 
-public class Model{
+public class ModelMap{
   double centerX=10;
   double centerY=10;
   public double centerX() {return centerX;}
@@ -14,11 +14,6 @@ public class Model{
     if(y==3 && z==6)return Item.ground;
     return Item.nope;
   }*/
-  public void goWest() {centerX-=0.1d;if(centerX<0d)centerX=0d;}
-
-  public void goEast() {centerX+=0.1d;}
-  public void goSouth() {centerY+=0.1d;}
-  public void goNorth() {centerY-=0.1d;if(centerY<0d)centerY=0d;}
   
   int[][]map=new int[100][100];
   {for(int x=0;x<100;x+=1)for(int y=0;y<100;y+=1)map[x][y]=25;

@@ -1,4 +1,4 @@
-package topViewDE.rendering;
+package topViewDE.view;
 
 import java.awt.Graphics2D;
 

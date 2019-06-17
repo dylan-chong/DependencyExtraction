@@ -1,11 +1,13 @@
-package topViewDE.rendering;
+package topViewDE.view;
 
 import java.awt.Graphics2D;
-public interface Rendering<M,D>{
+public interface View<M,D>{
   double centerX(M m);//always positive
   double centerY(M m);//always positive
+  void handleKeyEvent(Character c);
   D get(M m,int x,int y, int z);
-  void draw(Viewport<M,D> view,int x,int y,int z);
+  void drawCell(Viewport<M,D> view,int x,int y,int z);
+  
   static int max=51;
   static int half=26;
   static double scaleZ=0.5d;
@@ -35,25 +37,25 @@ public interface Rendering<M,D>{
     for(int z = 0; z < maxZ; z+=1){
       for(int y = 0; y < maxY; y+=1)
         for (int x = 0; x < maxX; x+=1)
-          draw(map,minX+x,minY+y,z);
+          drawCell(map,minX+x,minY+y,z);
       for(int y = 0; y < maxY; y+=1)
        for (int x = maxX-1; x >= 0; x-=1)
-          draw(map,minX+maxX+1+x,minY+y,z); 
+          drawCell(map,minX+maxX+1+x,minY+y,z); 
       for(int y = maxY-1; y >= 0; y-=1)
         for (int x = maxX-1; x >= 0; x-=1)
-          draw(map,minX+maxX+1+x,minY+maxY+1+y,z);
+          drawCell(map,minX+maxX+1+x,minY+maxY+1+y,z);
       for(int y = maxY-1; y >= 0; y-=1)
         for (int x = 0; x < maxX; x+=1)
-          draw(map,minX+x,minY+maxY+1+y,z);
+          drawCell(map,minX+x,minY+maxY+1+y,z);
       for (int x = 0; x < maxX; x+=1)
-        draw(map,minX+x,minY+maxY,z);
+        drawCell(map,minX+x,minY+maxY,z);
       for (int x = maxX-1; x >= 0; x-=1)
-        draw(map,minX+maxX+1+x,minY+maxY,z);
+        drawCell(map,minX+maxX+1+x,minY+maxY,z);
       for (int y = 0; y < maxY; y+=1)
-        draw(map,minX+maxX,minY+y,z);
+        drawCell(map,minX+maxX,minY+y,z);
       for (int y = maxY-1; y >= 0; y-=1)
-        draw(map,minX+maxX,minY+maxY+1+y,z);
-      draw(map,minX+maxX,minY+maxY,z);
+        drawCell(map,minX+maxX,minY+maxY+1+y,z);
+      drawCell(map,minX+maxX,minY+maxY,z);
       }
   }
 }

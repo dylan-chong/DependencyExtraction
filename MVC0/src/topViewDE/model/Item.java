@@ -1,4 +1,4 @@
-package topViewDE.logic;
+package topViewDE.model;
 
 public interface Item{
   public static final Item nope=new Item() {};
