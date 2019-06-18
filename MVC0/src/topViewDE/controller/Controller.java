@@ -11,6 +11,7 @@ public interface Controller{
   void goWest();
   void cameraUp();
   void cameraDown();
+  void repaint();
   
   default void handleKeyEvent(Character c){
     var mapped=actions().get(c);
@@ -22,8 +23,8 @@ public interface Controller{
     res.put('2',()->goSouth());
     res.put('6',()->goEast());
     res.put('4',()->goWest());
-    res.put('5',()->cameraUp());
-    res.put('0',()->cameraDown());
+    res.put('5',()->{cameraUp();repaint();});
+    res.put('0',()->{cameraDown();repaint();});
     return res;
     }
   }

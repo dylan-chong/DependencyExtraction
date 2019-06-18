@@ -1,13 +1,24 @@
 package topViewDE.view;
 
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+
 public interface View<M,D>{
   double centerX(M m);//always positive
   double centerY(M m);//always positive
   void handleKeyEvent(Character c);
   D get(M m,int x,int y, int z);
   void drawCell(Viewport<M,D> view,int x,int y,int z);
-  
+  M getMap();
+  double getCameraZ();
+  JFrame getFrame();
   static int max=51;
   static int half=26;
   static double scaleZ=0.5d;
@@ -57,5 +68,27 @@ public interface View<M,D>{
         drawCell(map,minX+maxX,minY+maxY+1+y,z);
       drawCell(map,minX+maxX,minY+maxY,z);
       }
+  }
+  default void initializeApp() {
+      JFrame f=getFrame();
+      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      f.getContentPane().add(new GameMap<M,D>(this));
+      f.pack();
+      f.addKeyListener(new KeyListener() {
+      @Override public void keyTyped(KeyEvent e) {
+        View.this.handleKeyEvent(e.getKeyChar());
+        }
+      @Override public void keyReleased(KeyEvent arg0) {}
+      @Override public void keyPressed(KeyEvent arg0) {}
+      });
+    }
+}
+class GameMap<M,D> extends JComponent{
+  private static final long serialVersionUID = 1L;
+  @Override public Dimension getPreferredSize() {return new Dimension(800,800);}
+  View<M,D> game;
+  GameMap(View<M,D> game){this.game=game;}
+  @Override public void paintComponent(Graphics g) {
+    game.renderViewPort((Graphics2D)g,game.getMap(),game.getCameraZ());
   }
 }

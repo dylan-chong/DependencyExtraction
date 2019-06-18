@@ -1,12 +1,24 @@
 package topViewDE.model;
 
 public interface Model{
- void updateView();
+ void repaint();
  ModelMap getMap();
- 
- default void goWest() {getMap().centerX-=0.1d;if(getMap().centerX<0d)getMap().centerX=0d;}
- default void goEast() {getMap().centerX+=0.1d;}
- default void goSouth() {getMap().centerY+=0.1d;}
- default void goNorth() {getMap().centerY-=0.1d;if(getMap().centerY<0d)getMap().centerY=0d;}
+ default double boundPos(double pos) {return Math.max(0,pos);}
+ default void goWest() {
+   getMap().centerX=boundPos(getMap().centerX-0.1d);
+   repaint();
+   }
+ default void goEast() {
+   getMap().centerX=boundPos(getMap().centerX+0.1d);
+   repaint();
+   }
+ default void goSouth() {
+   getMap().centerY=boundPos(getMap().centerY+0.1d);
+   repaint();
+   }
+ default void goNorth() {
+   getMap().centerY=boundPos(getMap().centerY-0.1d);
+   repaint();
+   }
  }
 
