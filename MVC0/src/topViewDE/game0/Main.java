@@ -1,8 +1,8 @@
-package topViewDE.game;
+package topViewDE.game0;
 
 import javax.swing.SwingUtilities;
 
-import topViewDE.model.ModelMap;
+import topViewDE.model0.ModelMap;
 
 public class Main {
   public static void main(String[] args) {

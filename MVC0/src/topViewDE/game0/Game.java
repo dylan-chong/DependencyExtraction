@@ -1,4 +1,4 @@
-package topViewDE.game;
+package topViewDE.game0;
 
 import java.awt.Graphics2D;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 
 import topViewDE.controller.*;
-import topViewDE.model.*;
+import topViewDE.model0.*;
 import topViewDE.view.*;
 import topViewDE.blocks.*;
 

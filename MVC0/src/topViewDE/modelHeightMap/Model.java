@@ -1,4 +1,4 @@
-package topViewDE.model;
+package topViewDE.modelHeightMap;
 
 public interface Model{
  void repaint();
