@@ -4,7 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.stream.IntStream;
-
+import static general.General.*;
 public interface Drawable{
   <V>void draw(Blocks<V> b,V view, int x, int y, int z);
   }
@@ -92,6 +92,22 @@ class TreeLeaves implements Decoration{
     g.fillOval(startX, startY,r,r);
   }
 }
+class Water extends Cube /*implements Transparent*/{
+  Water(){super(new Color(5,20,250/*,150*/));}
+  <V>int dept(Blocks<V> b,V v,int x, int y, int z){
+    assert b.get(v,b.coordDs(v,x,y,z)) instanceof Water;
+    int dept=0;
+    while(z-dept>0 && b.get(v,b.coordDs(v,x,y,z-dept)) instanceof Water)dept+=1;
+    return dept;
+  }
+  @Override<V> Color colorOf(Blocks<V> b,V v,int x, int y, int z) {
+    int dept=dept(b,v,x,y,z);
+    dept=Math.max(0,Math.min(255,200-dept*14));
+    return mix(mainColor,new Color(dept,dept,dept));
+    }
+}
+
+
 class Cube implements Drawable{
   Color mainColor;
   Cube(Color mainColor){this.mainColor=mainColor;}
@@ -110,27 +126,27 @@ class Cube implements Drawable{
       boolean paintLeft=right && isTransparent(b,v,x-1,y,z);
       boolean paintRight=left && isTransparent(b,v,x+1,y,z);
       boolean paintDown=up && isTransparent(b,v,x,y+1,z);
-      if(paintLeft)fill4(b,v,left(colorOf(z)),
+      if(paintLeft)fill4(b,v,left(colorOf(b,v,x,y,z)),
         b.coordPs(v,x,y,z), b.coordPs(v,x,y+1,z), b.coordPs(v,x,y+1,z+1), b.coordPs(v,x,y,z+1));
-      if(paintUp)fill4(b,v,up(colorOf(z)),
+      if(paintUp)fill4(b,v,up(colorOf(b,v,x,y,z)),
         b.coordPs(v,x, y, z),b.coordPs(v,x+1, y, z),b.coordPs(v,x+1, y, z+1),b.coordPs(v,x, y, z+1));
-      if(paintRight)fill4(b,v,left(colorOf(z)),
+      if(paintRight)fill4(b,v,left(colorOf(b,v,x,y,z)),
         b.coordPs(v,x+1,y,z), b.coordPs(v,x+1,y+1,z), b.coordPs(v,x+1,y+1,z+1), b.coordPs(v,x+1,y,z+1));
-      if(paintDown)fill4(b,v,up(colorOf(z)),
+      if(paintDown)fill4(b,v,up(colorOf(b,v,x,y,z)),
         b.coordPs(v,x,y+1,z), b.coordPs(v,x+1,y+1,z), b.coordPs(v,x+1,y+1,z+1), b.coordPs(v,x,y+1,z+1));
-      if(paintTop)fill4(b,v,colorOf(z),
+      if(paintTop)fill4(b,v,colorOf(b,v,x,y,z),
         b.coordPs(v,x,y,z+1), b.coordPs(v,x+1,y,z+1), b.coordPs(v,x+1,y+1,z+1), b.coordPs(v,x,y+1,z+1));
       }
-    private Color colorOf(int z) {
+    <V> Color colorOf(Blocks<V> b,V v,int x, int y, int z){
       z=Math.max(0,Math.min(250,z*7-10));
       return mix(mainColor,new Color(z,z,z));
       }
-    private Color mix(Color c1,Color c2) {
+    Color mix(Color c1,Color c2) {
       return new Color(
         (c1.getRed()+c2.getRed())/2,
         (c1.getGreen()+c2.getGreen())/2,
-        (c1.getBlue()+c2.getBlue())/2
-        );
+        (c1.getBlue()+c2.getBlue())/2,
+        c1.getAlpha());
     }
     private static final Color brown1=new Color(233, 168, 81);
     private Color left(Color c) {return mix(c,brown1);}

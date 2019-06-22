@@ -17,19 +17,39 @@ public class ModelMap{
   int[][]riverMap;
   final boolean[][]grassMap=new boolean[side][side];
   final boolean[][]treeMap=new boolean[side][side];  
+  final boolean[][]rocksMap=new boolean[side][side];
+  private int[] montainsTop;  
   void initMap(){
-    var r=new Random(14);
-    int source=addMontains(r);
+    var r=new Random(19);//14//16
+    addMontains(r);
     addShores(r);
     lowerShores();
     slides();
     slides();
     //riverMap=new int[side][side];
-    makeRiver(source,r);
+    makeRivers(r);
     makeGrass(r);
     makeTrees(r);
+    markRocks();
   }
   public ModelMap(){initMap();}
+  private void markRocks() {
+    for(int x=1;x<side-1;x++)for(int y=1;y<side-1;y++){
+      if(map[x][y]>=rockLevel) {rocksMap[x][y]=true;continue;}  
+      int[]xs= {x-1,x,x+1,x-1,  x+1,x-1,x,x+1};
+      int[]ys= {y-1,y-1,y-1,y,  y,y+1,y+1,y+1};     
+      int min=Integer.MAX_VALUE;
+      for(int i=0;i<8;i++){
+        int candidate=map[xs[i]][ys[i]];
+        if(candidate<min)min=candidate;
+      }
+      if(min<map[x][y]-6) {
+        rocksMap[x][y]=true;
+        grassMap[x][y]=false;
+        treeMap[x][y]=false;
+      }
+    }
+  }
   private void makeGrass(Random r) {
     var c=new CellularExpansion<Boolean>(side,side,r,500){
       @Override public Boolean 
@@ -55,8 +75,10 @@ public class ModelMap{
     for(int i:range(50)) c.grow(0.2d);
     c.read((i,b)->{if(b!=null)treeMap[c.x(i)][c.y(i)]=true;});
   }
-  private void makeRiver(int source,Random r) {
-    riverMap=runWater(source,r);
+  private void makeRivers(Random r) {
+    riverMap=new int[side][side];
+    runWater(montainsTop[2],r);
+    runWater(montainsTop[3],r);
     for(int x=1;x<side-1;x++)for(int y=1;y<side-1;y++){
       if(riverMap[x][y]>0) continue;
       int[]xs= {x-1,x,x+1,x-1,  x+1,x-1,x,x+1};
@@ -74,8 +96,7 @@ public class ModelMap{
     }
   }
   //also mutate the map
-  private int[][] runWater(int source, Random r) {
-    int[][]riverMap=new int[side][side];
+  private void runWater(int source, Random r) {
     int x=source%side+r.nextInt(5)-2;
     int y=source/side+r.nextInt(5)-2;
     List<Integer>rxs=new ArrayList<>();
@@ -102,7 +123,7 @@ public class ModelMap{
       x=xs[minP];
       y=ys[minP];
     }
-    if(rxs.size()<2)return riverMap;
+    if(rxs.size()<2)return;
     int size=rxs.size();
     int lastH=map[rxs.get(size-1)][rys.get(size-1)];
     for(int i=size-2;i>=0;i--){
@@ -118,9 +139,8 @@ public class ModelMap{
       }
       lastH=currentH;
     }
-    return riverMap;
   }
-  private int addMontains(Random r) {
+  private void addMontains(Random r) {
     var c=new CellularExpansion<Integer>(side,side,r,-1){
       @Override public Integer
       combine(int x, int y, Integer seed,Integer oldCell){
@@ -139,6 +159,7 @@ public class ModelMap{
     int p5=c.rCoord();
     int p6=c.rCoord();
     int p7=c.rCoord();
+    montainsTop=new int[]{p1,p2,p3,p4,p5,p6,p7};
     c.addSeed(p1,0); c.addSeed(p2,0); c.addSeed(p3,0); c.addSeed(p4,0);
     c.addSeed(p5,0);c.addSeed(p6,0);c.addSeed(p7,0);
     IntStream.range(1, 75).forEach(h->{
@@ -154,7 +175,6 @@ public class ModelMap{
       if(h<40) {c.addSeed(p5,h);c.addSeed(p6,h);c.addSeed(p7,h);}
       });
     c.read((i,h)->map[c.x(i)][c.y(i)]=h==null?0:h);
-    return p3;
   }
   private void addShores(Random r) {
     var c=new CellularExpansion<Boolean>(side,side,r,-1);
@@ -200,7 +220,8 @@ public class ModelMap{
     try{
       if(map[x][y]<=z && z<waterLevel)return Item.water;
       if(map[x][y]>z && grassMap[x][y])return Item.grass;
-      if(map[x][y]>z && !grassMap[x][y])return Item.ground;
+      if(map[x][y]>z && !grassMap[x][y] && !rocksMap[x][y])return Item.ground;
+      if(map[x][y]>z && rocksMap[x][y])return Item.rock;
       if(map[x][y]+riverMap[x][y]>z && riverMap[x][y]>0)return Item.water;
       if(treeMap[x][y]){
         if(itemRange(map[x][y],z,2) && z>treeLevel && !(riverMap[x][y]>0))return Item.trunk;
