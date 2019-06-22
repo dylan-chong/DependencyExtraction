@@ -37,8 +37,8 @@ public Game(ModelMap m) {this.m=m;}
 @Override public double centerX(ModelMap m) {return m.centerX();}
 @Override public double centerY(ModelMap m) {return m.centerY();}
 @Override public Graphics2D getGraphics(Viewport<ModelMap,Drawable> view) {return view.getGraphics();}
-@Override public void cameraUp() {cameraZ+=0.1d;}
-@Override public void cameraDown() {cameraZ-=0.1d;}
+@Override public void cameraUp() {cameraZ+=0.2d;}
+@Override public void cameraDown() {cameraZ-=0.2d;}
 @Override public int maxX(Viewport<ModelMap, Drawable> view) {return view.maxX;}
 @Override public int maxY(Viewport<ModelMap, Drawable> view) {return view.maxY;}
 @Override public int maxZ(Viewport<ModelMap, Drawable> view) {return view.maxZ;}
@@ -52,6 +52,7 @@ protected Drawable itemToDrawable(Item item){
 if(item==Item.nope)return DrawableConsts.air;
 if(item==Item.forest)return DrawableConsts.treeL;
 if(item==Item.trunk)return DrawableConsts.treeT;
+if(item==Item.water)return DrawableConsts.water;
 return DrawableConsts.rock;
 }
 //should not be needed but Java is confused

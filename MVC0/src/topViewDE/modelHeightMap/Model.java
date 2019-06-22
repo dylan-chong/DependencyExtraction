@@ -5,19 +5,19 @@ public interface Model{
  ModelMap getMap();
  default double boundPos(double pos) {return Math.max(0,pos);}
  default void goWest() {
-   getMap().centerX=boundPos(getMap().centerX-0.1d);
+   getMap().centerX=boundPos(getMap().centerX-0.3d);
    repaint();
    }
  default void goEast() {
-   getMap().centerX=boundPos(getMap().centerX+0.1d);
+   getMap().centerX=boundPos(getMap().centerX+0.3d);
    repaint();
    }
  default void goSouth() {
-   getMap().centerY=boundPos(getMap().centerY+0.1d);
+   getMap().centerY=boundPos(getMap().centerY+0.3d);
    repaint();
    }
  default void goNorth() {
-   getMap().centerY=boundPos(getMap().centerY-0.1d);
+   getMap().centerY=boundPos(getMap().centerY-0.3d);
    repaint();
    }
  }

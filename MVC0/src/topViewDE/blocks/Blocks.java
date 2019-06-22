@@ -14,6 +14,8 @@ public interface Blocks<V>{
   int pixelX(V view, int coord);
   int pixelY(V view, int coord);
   default void drawCell(V view,int x,int y,int z) {
-    get(view,coordDs(view,x,y,z)).draw(this,view,x,y,z);
+    var d=get(view,coordDs(view,x,y,z));
+    assert d!=null: x+" "+y+" "+z;
+    d.draw(this,view,x,y,z);
   }
 }

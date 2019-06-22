@@ -92,9 +92,9 @@ class TreeLeaves implements Decoration{
     g.fillOval(startX, startY,r,r);
   }
 }
-
-
 class Cube implements Drawable{
+  Color mainColor;
+  Cube(Color mainColor){this.mainColor=mainColor;}
   <V>boolean isTransparent(Blocks<V> b,V v,int x, int y, int z){
     if(x<0 || y<0 || z<0)return true;
     if(x>=b.maxX(v) ||y>=b.maxY(v) ||z>=b.maxZ(v))return true;
@@ -123,7 +123,7 @@ class Cube implements Drawable{
       }
     private Color colorOf(int z) {
       z=Math.max(0,Math.min(250,z*7-10));
-      return new Color(z,z,z);
+      return mix(mainColor,new Color(z,z,z));
       }
     private Color mix(Color c1,Color c2) {
       return new Color(
@@ -137,7 +137,7 @@ class Cube implements Drawable{
     private static final Color brown2=new Color(154, 87, 25);
     private Color up(Color c) {return mix(c,brown2);}
     
-    private <V>void fill4(Blocks<V> b,V v,Color c, int p1, int p2, int p3,int p4) {
+    static public <V>void fill4(Blocks<V> b,V v,Color c, int p1, int p2, int p3,int p4) {
       int[]x= {b.pixelX(v,p1),b.pixelX(v,p2),b.pixelX(v,p3),b.pixelX(v,p4)};
       int[]y= {b.pixelY(v,p1),b.pixelY(v,p2),b.pixelY(v,p3),b.pixelY(v,p4)};
       b.getGraphics(v).setColor(c);

@@ -76,6 +76,13 @@ public class CellularExpansion<T> {
   public int rCoord() {
     return r.nextInt(cells.length);
   }
+  public int rCoord(int xMin,int xMax,int yMin,int yMax) {
+    int xD=xMax-xMin;
+    int yD=yMax-yMin;
+    int rx=r.nextInt(xD);
+    int ry=r.nextInt(yD);
+    return coord(xMin+xD,yMin+yD);
+  }
   public void clearSeeds() {seeds.clear();}
   public T combine(T seed,T oldCell){
     if(oldCell!=null) {return null;}
