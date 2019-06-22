@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
+import static general.General.*;
 
 public class ModelMap{
   double centerX=32;
@@ -12,16 +13,47 @@ public class ModelMap{
   public double centerX() {return centerX;}
   public double centerY() {return centerY;}
   int side=64;
-  int[][]map=new int[side][side];{initMap();}
+  int[][]map=new int[side][side];
   int[][]riverMap;
+  final boolean[][]grassMap=new boolean[side][side];
+  final boolean[][]treeMap=new boolean[side][side];  
   void initMap(){
-    var r=new Random(8);
+    var r=new Random(14);
     int source=addMontains(r);
     addShores(r);
     lowerShores();
     slides();
     slides();
+    //riverMap=new int[side][side];
     makeRiver(source,r);
+    makeGrass(r);
+    makeTrees(r);
+  }
+  public ModelMap(){initMap();}
+  private void makeGrass(Random r) {
+    var c=new CellularExpansion<Boolean>(side,side,r,500){
+      @Override public Boolean 
+      combine(int x, int y, Boolean seed,Boolean oldCell){
+        if(map[x][y]<treeLevel) {return null;}
+        if(map[x][y]>rockLevel) {return null;}
+        return seed;}};
+    for(int i:range(50)) c.addSeed(c.rCoord(), true);
+    for(int i:range(50)) c.grow(0.2d);
+    c.read((i,b)->{
+      assert grassMap!=null;
+      if(b!=null)
+        grassMap[c.x(i)][c.y(i)]=true;
+      });
+  }
+  private void makeTrees(Random r) {
+    var c=new CellularExpansion<Boolean>(side,side,r,500){
+      @Override public Boolean 
+      combine(int x, int y, Boolean seed,Boolean oldCell){
+        if(!grassMap[x][y]) {return null;}
+        return seed;}};
+    for(int i:range(50)) c.addSeed(c.rCoord(), true);
+    for(int i:range(50)) c.grow(0.2d);
+    c.read((i,b)->{if(b!=null)treeMap[c.x(i)][c.y(i)]=true;});
   }
   private void makeRiver(int source,Random r) {
     riverMap=runWater(source,r);
@@ -36,7 +68,7 @@ public class ModelMap{
         if(candidate>max)max=candidate;
       }
       if(max==Integer.MIN_VALUE) {continue;}
-      //map[x][y]=max;
+      if(map[x][y]<waterLevel-1) {continue;}
       if(map[x][y]<=max) map[x][y]=max;
       else map[x][y]=(map[x][y]+max)/2;
     }
@@ -65,19 +97,23 @@ public class ModelMap{
         if(candidate<min) {min=candidate;minP=i;}
       }
       if(minP==-1)break;
+      //if(min<waterLevel-2)break;
+      if(map[x][y]<waterLevel-2)break;
       x=xs[minP];
       y=ys[minP];
-      if(min<waterLevel-2)break;
     }
     if(rxs.size()<2)return riverMap;
     int size=rxs.size();
     int lastH=map[rxs.get(size-1)][rys.get(size-1)];
     for(int i=size-2;i>=0;i--){
       int currentH=map[rxs.get(i)][rys.get(i)];
-      if(lastH>currentH)riverMap[rxs.get(i)][rys.get(i)]=1+lastH-currentH;
+      if(lastH>currentH){
+        riverMap[rxs.get(i)][rys.get(i)]+=lastH-currentH;
+        currentH=map[rxs.get(i)][rys.get(i)]+riverMap[rxs.get(i)][rys.get(i)]-1;
+      }
       if(lastH+1<currentH){//should make more water on waterfalls
         int delta=currentH-(lastH+1);
-        riverMap[rxs.get(i)][rys.get(i)]=delta+1;
+        riverMap[rxs.get(i)][rys.get(i)]+=delta;
         map[rxs.get(i)][rys.get(i)]-=delta;
       }
       lastH=currentH;
@@ -85,8 +121,9 @@ public class ModelMap{
     return riverMap;
   }
   private int addMontains(Random r) {
-    var c=new CellularExpansion<Integer>(side,side,r){
-      public Integer combine(Integer seed,Integer oldCell){
+    var c=new CellularExpansion<Integer>(side,side,r,-1){
+      @Override public Integer
+      combine(int x, int y, Integer seed,Integer oldCell){
         assert seed!=null;
         if(oldCell==null) {return seed;}
         if(oldCell+1==seed) {return seed;}
@@ -95,11 +132,15 @@ public class ModelMap{
       }};
     int[]lastSize={side*side};
     //IntStream.range(0, 4).forEach(i->c.addSeed(c.rCoord(), 0));
-    int p1=c.rCoord(8,54,8,54);
-    int p2=c.rCoord();
+    int p1=c.rCoord(8,32,8,32);
+    int p2=c.rCoord(32,54,32,54);
     int p3=c.coord((c.x(p1)+c.x(p1)+c.x(p2))/3,(c.y(p1)+c.y(p1)+c.y(p2))/3);
     int p4=c.coord((c.x(p1)+c.x(p2)+c.x(p2))/3,(c.y(p1)+c.y(p2)+c.y(p2))/3);
+    int p5=c.rCoord();
+    int p6=c.rCoord();
+    int p7=c.rCoord();
     c.addSeed(p1,0); c.addSeed(p2,0); c.addSeed(p3,0); c.addSeed(p4,0);
+    c.addSeed(p5,0);c.addSeed(p6,0);c.addSeed(p7,0);
     IntStream.range(1, 75).forEach(h->{
       //if(c.seedsSize()==0)return;
       //for(int attempts=0; attempts<10 &&c.seedsSize()<lastSize[0]*0.90d;attempts++)
@@ -108,20 +149,22 @@ public class ModelMap{
         c.grow(0.1d);
       lastSize[0]=c.seedsSize();
       c.clearSeeds();
-      c.addSeed(p1,h); c.addSeed(p2,h); c.addSeed(p3,h); c.addSeed(p4,h);
+      c.addSeed(p3,h); c.addSeed(p4,h);
+      if(h<60) {c.addSeed(p1,h);c.addSeed(p2,h);} 
+      if(h<40) {c.addSeed(p5,h);c.addSeed(p6,h);c.addSeed(p7,h);}
       });
     c.read((i,h)->map[c.x(i)][c.y(i)]=h==null?0:h);
     return p3;
   }
   private void addShores(Random r) {
-    var c=new CellularExpansion<Boolean>(side,side,r);
+    var c=new CellularExpansion<Boolean>(side,side,r,-1);
     for(int x=0;x<side;x++){c.addSeed(c.coord(x,0),true);c.addSeed(c.coord(x,side-1),true);}
     for(int y=0;y<side;y++){c.addSeed(c.coord(0,y),true);c.addSeed(c.coord(side-1,y),true);}
     for(int x=0;x<side/3;x++)for(int y=0;y<side/3;y++) {c.addSeed(c.coord(x,y),true);}
     int seeds=c.seedsSize();
     for(int attempts=0; attempts<200 && c.seedsSize()<seeds*3;attempts++)
         c.grow(0.1d);
-    c.read((i,b)->{if(b!=null)map[c.x(i)][c.y(i)]=0;});//needed since values are true/null
+    c.read((i,b)->{if(b!=null)map[c.x(i)][c.y(i)]=0;});
   }
   private void lowerShores() {
     int min=Integer.MAX_VALUE;
@@ -152,17 +195,21 @@ public class ModelMap{
   }
   public static int waterLevel=10;
   public static int treeLevel=13;
+  public static int rockLevel=65;
   public Item get(int x, int y, int z) {
     try{
       if(map[x][y]<=z && z<waterLevel)return Item.water;
-      if(map[x][y]>z)return Item.ground;
+      if(map[x][y]>z && grassMap[x][y])return Item.grass;
+      if(map[x][y]>z && !grassMap[x][y])return Item.ground;
       if(map[x][y]+riverMap[x][y]>z && riverMap[x][y]>0)return Item.water;
-      if(range(map[x][y],z,2) && z>treeLevel && !(riverMap[x][y]>0))return Item.trunk;
-      if(map[x][y]==z-2 && z>treeLevel && !(riverMap[x][y]>0))return Item.forest;
+      if(treeMap[x][y]){
+        if(itemRange(map[x][y],z,2) && z>treeLevel && !(riverMap[x][y]>0))return Item.trunk;
+        if(map[x][y]==z-2 && z>treeLevel && !(riverMap[x][y]>0))return Item.forest;
+        }
       }
     catch(ArrayIndexOutOfBoundsException e) {}
     return Item.nope;
   }
-  private boolean range(int a,int b,int c) {return a<b && b-a<c;}
+  private boolean itemRange(int a,int b,int c) {return a<b && b-a<c;}
   
 }

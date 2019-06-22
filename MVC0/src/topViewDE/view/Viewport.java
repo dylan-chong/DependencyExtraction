@@ -31,8 +31,8 @@ public class Viewport<M,D>{
   static int half=400;
   public void cachePoint(int x,int y,int z,double cameraElevation,double xi, double yi,double zi){
     double zd=cameraElevation-(zi/2d);
-    double xd=xi-(maxX+1)/2d;
-    double yd=yi-(maxY+1)/2d;
+    double xd=xi-(maxX-1d)/2d;
+    double yd=yi-(maxY-1d)/2d;
     double d=Math.sqrt(zd*zd+xd*xd+yd*yd);
     double f=scale/d;
     setPixelX(coordPs(x,y,z),(int)(scale*xd/d-f/2d)+half);

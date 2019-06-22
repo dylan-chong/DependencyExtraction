@@ -101,10 +101,10 @@ class Cube implements Drawable{
     return b.get(v,b.coordDs(v,x,y,z)) instanceof Transparent;
   }
   public<V> void draw(Blocks<V> b,V v,int x, int y, int z) {
-    boolean up=y<b.maxY(v)/2;
-    boolean down=y>b.maxY(v)/2;
-    boolean left=x<b.maxX(v)/2;
-      boolean right=x>b.maxX(v)/2;
+    boolean up=y<b.maxY(v)/2d-1d;
+    boolean down=y>b.maxY(v)/2d-1d;
+    boolean left=x<b.maxX(v)/2d-1d;
+      boolean right=x>b.maxX(v)/2d-1d;
       boolean paintTop=isTransparent(b,v,x,y,z+1);
       boolean paintUp= down && isTransparent(b,v,x,y-1,z);
       boolean paintLeft=right && isTransparent(b,v,x-1,y,z);

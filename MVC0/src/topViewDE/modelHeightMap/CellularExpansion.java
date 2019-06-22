@@ -13,11 +13,13 @@ public class CellularExpansion<T> {
   final int maxY;
   final T[] cells;
   final Random r;
-  final List<Integer>seeds=new ArrayList<>();
-  CellularExpansion(int maxX,int maxY,Random r){
+  List<Integer>seeds=new ArrayList<>();
+  final int maxSeeds;
+  CellularExpansion(int maxX,int maxY,Random r,int maxSeeds){
     this.maxX=maxX;
     this.maxY=maxY;
     this.r=r;
+    this.maxSeeds=maxSeeds;
     @SuppressWarnings("unchecked")
     T[] cells=(T[])new Object[maxX*maxY];
     this.cells=cells;
@@ -51,6 +53,8 @@ public class CellularExpansion<T> {
   private List<Integer> order=new ArrayList<>(Arrays.asList(0,1,2,3,4,5,6,7));
   void grow(double chance) { 
     Collections.shuffle(order, r);
+    int limit=seeds.size()-maxSeeds;
+    if(maxSeeds>0 && limit>0)seeds=new ArrayList<>(seeds.subList(limit,limit+maxSeeds));
     Collections.shuffle(seeds,r);
     int size=seeds.size();//will change down below
     for(int i=0;i<size;i++) {
@@ -59,20 +63,24 @@ public class CellularExpansion<T> {
       int y=y(c);
       T seed=cells[c];
       assert seed!=null;
+      //int countNearEq=0;
       for(var o:order) {
         int xd=x+xDeltas[o];
         int yd=y+yDeltas[o];
         if(xd<0 || xd>=maxX ||yd<0 || yd>=maxY)continue;
         int nearC=coord(xd,yd);
         if(r.nextDouble()>chance)continue;
-        T newSeed=combine(seed,cells[nearC]);
+        //if(cells[nearC]==seed){countNearEq+=1;}
+        T newSeed=combine(x,y,seed,cells[nearC]);
         if(newSeed==null) continue;
         cells[nearC]=newSeed;
         cells[c]=newSeed;
         seeds.add(nearC);
       }
+      //if(countNearEq==8)killSeed(seed,c);
     }
   }
+  //public void killSeed(T seed, int c) {seeds.remove((Object)c);}
   public int rCoord() {
     return r.nextInt(cells.length);
   }
@@ -81,10 +89,10 @@ public class CellularExpansion<T> {
     int yD=yMax-yMin;
     int rx=r.nextInt(xD);
     int ry=r.nextInt(yD);
-    return coord(xMin+xD,yMin+yD);
+    return coord(xMin+rx,yMin+ry);
   }
   public void clearSeeds() {seeds.clear();}
-  public T combine(T seed,T oldCell){
+  public T combine(int x, int y, T seed,T oldCell){
     if(oldCell!=null) {return null;}
     return seed;
   }

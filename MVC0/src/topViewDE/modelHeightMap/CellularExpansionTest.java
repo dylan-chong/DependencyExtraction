@@ -10,7 +10,7 @@ public class CellularExpansionTest {
 
   @Test
   public void testCenter() {
-    var cells=new CellularExpansion<String>(7, 7, new Random(3));
+    var cells=new CellularExpansion<String>(7, 7, new Random(3),-1);
     cells.addSeed(cells.coord(3,3),"H");
     assertEquals("\n" + 
         "@@@@@@@\n" + 
@@ -23,7 +23,7 @@ public class CellularExpansionTest {
   }
   @Test
   public void testTop() {
-    var cells=new CellularExpansion<String>(7, 7, new Random(3));
+    var cells=new CellularExpansion<String>(7, 7, new Random(3),-1);
     cells.addSeed(cells.coord(3,0),"H");
     assertEquals("\n" + 
         "@@@H@@@\n" + 
@@ -36,7 +36,7 @@ public class CellularExpansionTest {
   }
   @Test
   public void testCenterGrow() {
-    var cells=new CellularExpansion<String>(7, 7, new Random(3));
+    var cells=new CellularExpansion<String>(7, 7, new Random(3),-1);
     cells.addSeed(cells.coord(3,3),"H");
     cells.grow(1.1d);
     assertEquals("\n" + 
@@ -50,7 +50,7 @@ public class CellularExpansionTest {
   }
   @Test
   public void testCenterGrow02() {
-    var cells=new CellularExpansion<String>(7, 7, new Random(3));
+    var cells=new CellularExpansion<String>(7, 7, new Random(3),-1);
     cells.addSeed(cells.coord(3,3),"H");
     cells.grow(0.2d);
     assertEquals("\n" + 
@@ -64,7 +64,7 @@ public class CellularExpansionTest {
   }
   @Test
   public void testCenterGrow02_5() {
-    var cells=new CellularExpansion<String>(7, 7, new Random(3));
+    var cells=new CellularExpansion<String>(7, 7, new Random(3),-1);
     cells.addSeed(cells.coord(3,3),"H");
     cells.grow(0.2d);
     cells.grow(0.2d);

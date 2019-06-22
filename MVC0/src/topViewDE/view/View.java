@@ -10,7 +10,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-public interface View<M,D>{
+public interface View<M,D> extends Visit<M,D>{
   double centerX(M m);//always positive
   double centerY(M m);//always positive
   void handleKeyEvent(Character c);
@@ -37,38 +37,7 @@ public interface View<M,D>{
       D d=get(m,x+offX-half,y+offY-half,z);
       map.set(d,map.coordDs(x,y,z));
     }
-    visitQuadrants(map,0,0,max,max,maxZ);
-  }
-  default void visitQuadrants(Viewport<M,D> map,int minX,int minY,int maxX,int maxY,int maxZ) {
-    maxX-=minX;
-    maxY-=minY;
-    assert maxX%2!=0;
-    assert maxY%2!=0;
-    maxX=maxX/2;
-    maxY=maxY/2;
-    for(int z = 0; z < maxZ; z+=1){
-      for(int y = 0; y < maxY; y+=1)
-        for (int x = 0; x < maxX; x+=1)
-          drawCell(map,minX+x,minY+y,z);
-      for(int y = 0; y < maxY; y+=1)
-       for (int x = maxX-1; x >= 0; x-=1)
-          drawCell(map,minX+maxX+1+x,minY+y,z); 
-      for(int y = maxY-1; y >= 0; y-=1)
-        for (int x = maxX-1; x >= 0; x-=1)
-          drawCell(map,minX+maxX+1+x,minY+maxY+1+y,z);
-      for(int y = maxY-1; y >= 0; y-=1)
-        for (int x = 0; x < maxX; x+=1)
-          drawCell(map,minX+x,minY+maxY+1+y,z);
-      for (int x = 0; x < maxX; x+=1)
-        drawCell(map,minX+x,minY+maxY,z);
-      for (int x = maxX-1; x >= 0; x-=1)
-        drawCell(map,minX+maxX+1+x,minY+maxY,z);
-      for (int y = 0; y < maxY; y+=1)
-        drawCell(map,minX+maxX,minY+y,z);
-      for (int y = maxY-1; y >= 0; y-=1)
-        drawCell(map,minX+maxX,minY+maxY+1+y,z);
-      drawCell(map,minX+maxX,minY+maxY,z);
-      }
+    visitQuadrants(map,max,max,maxZ);
   }
   default void initializeApp() {
       JFrame f=getFrame();
@@ -91,5 +60,37 @@ class GameMap<M,D> extends JComponent{
   GameMap(View<M,D> game){this.game=game;}
   @Override public void paintComponent(Graphics g) {
     game.renderViewPort((Graphics2D)g,game.getMap(),game.getCameraZ());
+  }
+}
+interface Visit<M,D>{
+  void drawCell(Viewport<M,D> map,int x,int y,int z);
+  default void visitQuadrants(Viewport<M,D> map,int maxX,int maxY,int maxZ) {
+    assert maxX%2!=0;
+    assert maxY%2!=0;
+    maxX=maxX/2;
+    maxY=maxY/2;
+    for(int z = 0; z < maxZ; z+=1){
+      for(int y = 0; y < maxY; y+=1)
+        for (int x = 0; x < maxX; x+=1)
+          drawCell(map,x,y,z);
+      for(int y = 0; y < maxY; y+=1)
+        for (int x = maxX; x > 0; x-=1)
+          drawCell(map,maxX+x,y,z); 
+      for(int y = maxY; y > 0; y-=1)
+        for (int x = maxX; x > 0; x-=1)
+          drawCell(map,maxX+x,maxY+y,z);
+      for(int y = maxY; y > 0; y-=1)
+        for (int x = 0; x < maxX; x+=1)
+          drawCell(map,x,maxY+y,z);
+      for (int x = 0; x < maxX; x+=1)
+        drawCell(map,x,maxY,z);
+      for (int x = maxX; x > 0; x-=1)
+        drawCell(map,maxX+x,maxY,z);
+      for (int y = 0; y < maxY; y+=1)
+        drawCell(map,maxX,y,z);
+      for (int y = maxY; y > 0; y-=1)
+        drawCell(map,maxX,maxY+y,z);
+      drawCell(map,maxX,maxY,z);
+    }
   }
 }

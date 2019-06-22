@@ -53,6 +53,8 @@ if(item==Item.nope)return DrawableConsts.air;
 if(item==Item.forest)return DrawableConsts.treeL;
 if(item==Item.trunk)return DrawableConsts.treeT;
 if(item==Item.water)return DrawableConsts.water;
+if(item==Item.grass)return DrawableConsts.grass;
+if(item==Item.ground)return DrawableConsts.rock;
 return DrawableConsts.rock;
 }
 //should not be needed but Java is confused
