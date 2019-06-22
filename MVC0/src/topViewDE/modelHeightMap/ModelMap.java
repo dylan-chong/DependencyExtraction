@@ -24,17 +24,7 @@ public class ModelMap{
     makeRiver(source,r);
   }
   private void makeRiver(int source,Random r) {
-    int[][]riverMapBase=runWater(source,r);
-    riverMap=new int[side][side];
-    for(int x=1;x<side-1;x++)for(int y=1;y<side-1;y++) {
-      if(riverMapBase[x][y]>0) {riverMap[x][y]=riverMapBase[x][y];continue;}
-      riverMap[x][y]=IntStream.of(
-        riverMapBase[x-1][y], riverMapBase[x][y+1],
-        riverMapBase[x+1][y], riverMapBase[x][y-1],
-        riverMapBase[x+1][y], riverMapBase[x][y+1],
-        riverMapBase[x-1][y], riverMapBase[x][y-1])
-        .max().getAsInt();
-    }
+    riverMap=runWater(source,r);
     for(int x=1;x<side-1;x++)for(int y=1;y<side-1;y++){
       if(riverMap[x][y]>0) continue;
       int[]xs= {x-1,x,x+1,x-1,  x+1,x-1,x,x+1};
@@ -46,9 +36,9 @@ public class ModelMap{
         if(candidate>max)max=candidate;
       }
       if(max==Integer.MIN_VALUE) {continue;}
-      map[x][y]=max;
-      //if(map[x][y]<=max) map[x][y]=max;
-      //else map[x][y]=(map[x][y]+max)/2;
+      //map[x][y]=max;
+      if(map[x][y]<=max) map[x][y]=max;
+      else map[x][y]=(map[x][y]+max)/2;
     }
   }
   //also mutate the map
@@ -65,11 +55,11 @@ public class ModelMap{
       rxs.add(x);
       rys.add(y);
       //compute next point
-      int[]xs= {x-1,x,x+1,x-1,  x+1,x-1,x,x+1};
-      int[]ys= {y-1,y-1,y-1,y,  y,y+1,y+1,y+1};     
+      int[]xs= {  x, x-1, x+1,   x};
+      int[]ys= {y-1,   y,   y, y+1};     
       int min=Integer.MAX_VALUE;
       int minP=-1;
-      for(int i=0;i<8;i++){
+      for(int i=0;i<4;i++){
         if(riverMap[xs[i]][ys[i]]>0)continue;
         int candidate=map[xs[i]][ys[i]];
         if(candidate<min) {min=candidate;minP=i;}
@@ -79,16 +69,19 @@ public class ModelMap{
       y=ys[minP];
       if(min<waterLevel-2)break;
     }
-    int lastH=map[rxs.size()-1][rys.size()-1];
-    /*for(int i=rxs.size()-2;i>=0;i--){
+    if(rxs.size()<2)return riverMap;
+    int size=rxs.size();
+    int lastH=map[rxs.get(size-1)][rys.get(size-1)];
+    for(int i=size-2;i>=0;i--){
       int currentH=map[rxs.get(i)][rys.get(i)];
       if(lastH>currentH)riverMap[rxs.get(i)][rys.get(i)]=1+lastH-currentH;
-      if(lastH+1<currentH){
+      if(lastH+1<currentH){//should make more water on waterfalls
         int delta=currentH-(lastH+1);
         riverMap[rxs.get(i)][rys.get(i)]=delta+1;
         map[rxs.get(i)][rys.get(i)]-=delta;
       }
-    }*/
+      lastH=currentH;
+    }
     return riverMap;
   }
   private int addMontains(Random r) {
