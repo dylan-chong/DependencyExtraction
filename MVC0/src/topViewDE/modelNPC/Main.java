@@ -47,9 +47,9 @@ return itemToDrawable(m.get(x,y,z));
 }
 //only interesting method
 protected Drawable itemToDrawable(Item item){
-if(item==Item.nope)return DrawableConsts.air;
-if(item==Item.forest)return DrawableConsts.treeL;
-if(item==Item.trunk)return DrawableConsts.treeT;
+if(item==Item.air)return DrawableConsts.air;
+if(item==Item.treeTop)return DrawableConsts.treeL;
+if(item==Item.treeTrunk)return DrawableConsts.treeT;
 if(item==Item.water)return DrawableConsts.water;
 if(item==Item.grass)return DrawableConsts.grass;
 if(item==Item.ground)return DrawableConsts.ground;

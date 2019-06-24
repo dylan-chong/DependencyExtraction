@@ -228,11 +228,13 @@ public I get(int x, int y, int z) {
     if(map[x][y]>z && !grassMap[x][y] && !rocksMap[x][y])return ground();
     if(map[x][y]>z && rocksMap[x][y])return rock();
     if(map[x][y]+riverMap[x][y]>z && riverMap[x][y]>0)return water();
-    if(treeMap[x][y]){
-      if(itemRange(map[x][y],z,2) && z>treeLevel && !(riverMap[x][y]>0))return treeTrunk();
-      if(map[x][y]==z-2 && z>treeLevel && !(riverMap[x][y]>0))return treeTop();
+    if(treeMap[x][y] && map[x][y]>treeLevel && riverMap[x][y]==0){
+      if(map[x][y]==z)return treeTrunk();
+      if(map[x][y]==z-1)return treeTrunk();
+      if(map[x][y]==z-2)return treeTop();
       }
     return air();
   }
-private boolean itemRange(int a,int b,int c) {return a<b && b-a<c;}
+  public int heightAt(int x, int y) {
+    return Integer.max(waterLevel,map[x][y]+riverMap[x][y]);}
 }

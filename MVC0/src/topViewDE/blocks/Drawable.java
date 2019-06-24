@@ -138,7 +138,7 @@ class Cube implements Drawable{
         b.coordPs(v,x,y,z+1), b.coordPs(v,x+1,y,z+1), b.coordPs(v,x+1,y+1,z+1), b.coordPs(v,x,y+1,z+1));
       }
     <V> Color colorOf(Blocks<V> b,V v,int x, int y, int z){
-      z=Math.max(0,Math.min(250,z*7-10));
+      z=Math.max(0,Math.min(250,z*7-200));
       return mix(mainColor,new Color(z,z,z));
       }
     Color mix(Color c1,Color c2) {
