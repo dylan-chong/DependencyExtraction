@@ -2,11 +2,10 @@ package topViewDE.view;
 
 import java.awt.Graphics2D;
 
-public class Viewport<M,D>{
+public final class Viewport<M,D>{
   public D get(int coord){return ds[coord];}
   public void set(D elem, int coord){ds[coord]=elem;}
   public Graphics2D getGraphics(){return g;}  
-  public void redraw(Graphics2D g) {}
   final int[] points;
   final D[] ds;
   Graphics2D g;

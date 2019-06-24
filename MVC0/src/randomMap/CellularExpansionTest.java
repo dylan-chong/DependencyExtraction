@@ -1,4 +1,4 @@
-package topViewDE.modelHeightMap;
+package randomMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 

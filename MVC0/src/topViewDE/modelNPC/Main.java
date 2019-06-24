@@ -1,7 +1,8 @@
-package topViewDE.gameHeighMap;
+package topViewDE.modelNPC;
 
 import java.awt.Graphics2D;
 import java.util.Map;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -10,9 +11,6 @@ import topViewDE.blocks.Blocks;
 import topViewDE.blocks.Drawable;
 import topViewDE.blocks.DrawableConsts;
 import topViewDE.controller.Controller;
-import topViewDE.modelHeightMap.Item;
-import topViewDE.modelHeightMap.Model;
-import topViewDE.modelHeightMap.ModelMap;
 import topViewDE.view.View;
 import topViewDE.view.Viewport;
 
@@ -68,7 +66,7 @@ return DrawableConsts.rock;
 }
 public class Main {
   public static void main(String[] args) {
-    ModelMap m=new ModelMap();
+    ModelMap m=new ModelMap(new Random(19));
     SwingUtilities.invokeLater(()->{
       Game g=new Game(m);
       g.initializeApp();

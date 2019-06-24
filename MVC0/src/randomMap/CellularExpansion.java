@@ -1,4 +1,4 @@
-package topViewDE.modelHeightMap;
+package randomMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +15,7 @@ public class CellularExpansion<T> {
   final Random r;
   List<Integer>seeds=new ArrayList<>();
   final int maxSeeds;
-  CellularExpansion(int maxX,int maxY,Random r,int maxSeeds){
+  public CellularExpansion(int maxX,int maxY,Random r,int maxSeeds){
     this.maxX=maxX;
     this.maxY=maxY;
     this.r=r;
@@ -36,14 +36,14 @@ public class CellularExpansion<T> {
     }
     return b.toString();
   }
-  int coord(int x,int y){
+  public int coord(int x,int y){
     assert x>=0;assert x<maxX;
     assert y>=0;assert y<maxY;
     return x+maxX*y;
     }
-  int x(int coord) {return coord%maxX;}
-  int y(int coord) {return coord/maxX;}
-  void addSeed(int coord,T seed) {
+  public int x(int coord) {return coord%maxX;}
+  public int y(int coord) {return coord/maxX;}
+  public void addSeed(int coord,T seed) {
     assert coord>=0; assert coord<cells.length;
     this.seeds.add(coord);
     cells[coord]=seed;
@@ -51,7 +51,7 @@ public class CellularExpansion<T> {
   private static final int[] xDeltas=new int[]{-1, 0, 1,-1, 1,-1, 0, 1};
   private static final int[] yDeltas=new int[]{-1,-1,-1, 0, 0, 1, 1, 1};
   private List<Integer> order=new ArrayList<>(Arrays.asList(0,1,2,3,4,5,6,7));
-  void grow(double chance) { 
+  public void grow(double chance) { 
     Collections.shuffle(order, r);
     int limit=seeds.size()-maxSeeds;
     if(maxSeeds>0 && limit>0)seeds=new ArrayList<>(seeds.subList(limit,limit+maxSeeds));
