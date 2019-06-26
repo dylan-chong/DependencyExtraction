@@ -1,16 +1,20 @@
 package topViewDE.game0;
 
-import java.awt.Graphics2D;
+import topViewDE.blocks.Blocks;
+import topViewDE.blocks.Drawable;
+import topViewDE.blocks.DrawableConsts;
+import topViewDE.controller.Controller;
+import topViewDE.model0.Item;
+import topViewDE.model0.Model;
+import topViewDE.model0.ModelMap;
+import topViewDE.view.View;
+import topViewDE.view.Viewport;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Map;
 
-import javax.swing.JFrame;
-
-import topViewDE.controller.*;
-import topViewDE.model0.*;
-import topViewDE.view.*;
-import topViewDE.blocks.*;
-
-public class Game extends JFrame implements 
+public class Game extends JFrame implements
     Model,
     View<ModelMap,Drawable>,
     Controller,
@@ -22,7 +26,8 @@ public class Game extends JFrame implements
   ModelMap m;
   public Game(ModelMap m) {this.m=m;}
   @Override public JFrame getFrame() {return this;}
-  @Override public Drawable get(Viewport<ModelMap,Drawable> view, int coord) {return view.get(coord);}
+
+      @Override public Drawable get(Viewport<ModelMap,Drawable> view, int coord) {return view.get(coord);}
   @Override public void set(Viewport<ModelMap,Drawable> view, Drawable elem, int coord) {view.set(elem,coord);}
   @Override public int coordDs(Viewport<ModelMap,Drawable> view, int x, int y, int z) {return view.coordDs(x,y,z);}
   @Override public int coordPs(Viewport<ModelMap,Drawable> view, int x, int y, int z) {return view.coordPs(x,y,z);}
@@ -41,7 +46,8 @@ public class Game extends JFrame implements
   @Override public Drawable get(ModelMap m, int x, int y, int z){
     return itemToDrawable(m.get(x,y,z));
     }
-  //only interesting method
+
+      //only interesting method
   protected Drawable itemToDrawable(Item item){
     if(item==Item.nope)return DrawableConsts.air;
     if(item==Item.forest)return DrawableConsts.treeL;
