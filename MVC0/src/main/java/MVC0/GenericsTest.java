@@ -1,3 +1,5 @@
+package MVC0;
+
 public class GenericsTest {
 }
 
@@ -100,3 +102,23 @@ GenericsTest.java:77: error: types II1 and II2 are incompatible;
 4 errors
 error: compilation failed
  */
+
+/*
+> ./gradlew clean test run
+
+> Task :compileJava FAILED
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/MVC0/GenericsTest.java:22: error: Mix is not abstract and does not override abstract method m(CV<C>) in I2
+  class Mix implements I1, I2<CV<C>> {
+  ^
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/MVC0/GenericsTest.java:39: error: CC is not abstract and does not override abstract method m(int) in II2
+  class CC implements II1, II2 {
+  ^
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/MVC0/GenericsTest.java:58: error: CC is not abstract and does not override abstract method m(int) in II1
+  class CC implements II1, II2 {
+  ^
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/MVC0/GenericsTest.java:79: error: types II1 and II2 are incompatible;
+  class CC implements II1, II2 {
+  ^
+  class CC inherits unrelated defaults for m(int) from types II1 and II2
+4 errors
+*/
