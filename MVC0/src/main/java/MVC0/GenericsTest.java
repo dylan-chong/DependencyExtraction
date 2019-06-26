@@ -84,27 +84,61 @@ interface Example4 {
   }
 }
 
+interface Example5 {
+  interface II1 {
+    default void m() {
+    }
+  }
+
+  interface II2 {
+    void m();
+  }
+
+  class CC implements II1, II2 {
+  }
+}
+
+interface Example6 {
+  interface II1<T> {
+    default T m() {
+    }
+  }
+
+  interface II2<T> {
+    T m();
+  }
+
+  class CC implements II1<Integer>, II2<Integer> {
+  }
+}
+
 /*
 > java GenericsTest.java
-GenericsTest.java:20: error: Mix is not abstract and does not override abstract method m(CV<C>) in I2
+GenericsTest.java:22: error: Mix is not abstract and does not override abstract method m(CV<C>) in I2
   class Mix implements I1, I2<CV<C>> {
   ^
-GenericsTest.java:37: error: CC is not abstract and does not override abstract method m(int) in II2
+GenericsTest.java:39: error: CC is not abstract and does not override abstract method m(int) in II2
   class CC implements II1, II2 {
   ^
-GenericsTest.java:56: error: CC is not abstract and does not override abstract method m(int) in II1
+GenericsTest.java:58: error: CC is not abstract and does not override abstract method m(int) in II1
   class CC implements II1, II2 {
   ^
-GenericsTest.java:77: error: types II1 and II2 are incompatible;
+GenericsTest.java:79: error: types II1 and II2 are incompatible;
   class CC implements II1, II2 {
   ^
   class CC inherits unrelated defaults for m(int) from types II1 and II2
-4 errors
+GenericsTest.java:97: error: CC is not abstract and does not override abstract method m() in II2
+  class CC implements II1, II2 {
+  ^
+GenericsTest.java:111: error: CC is not abstract and does not override abstract method m() in II2
+  class CC implements II1<Integer>, II2<Integer> {
+  ^
+6 errors
 error: compilation failed
  */
 
 /*
-> ./gradlew clean test run
+> ./gradlew clean build run
 
 > Task :compileJava FAILED
 /Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/MVC0/GenericsTest.java:22: error: Mix is not abstract and does not override abstract method m(CV<C>) in I2
@@ -120,6 +154,12 @@ error: compilation failed
   class CC implements II1, II2 {
   ^
   class CC inherits unrelated defaults for m(int) from types II1 and II2
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/MVC0/GenericsTest.java:97: error: CC is not abstract and does not override abstract method m() in II2
+  class CC implements II1, II2 {
+  ^
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/MVC0/GenericsTest.java:111: error: CC is not abstract and does not override abstract method m() in II2
+  class CC implements II1<Integer>, II2<Integer> {
+  ^
 /Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/topViewDE/modelNPC/Main.java:17: error: Game is not abstract and does not override abstract method drawCell(Viewport<ModelMap,Drawable>,int,int,int) in View
 class Game extends JFrame implements
 ^
@@ -129,7 +169,7 @@ class Game extends JFrame implements
 /Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/topViewDE/game0/Game.java:17: error: Game is not abstract and does not override abstract method drawCell(Viewport<ModelMap,Drawable>,int,int,int) in View
 public class Game extends JFrame implements
        ^
-7 errors
+9 errors
 
 FAILURE: Build failed with an exception.
 
