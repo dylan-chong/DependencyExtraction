@@ -120,5 +120,28 @@ error: compilation failed
   class CC implements II1, II2 {
   ^
   class CC inherits unrelated defaults for m(int) from types II1 and II2
-4 errors
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/topViewDE/modelNPC/Main.java:17: error: Game is not abstract and does not override abstract method drawCell(Viewport<ModelMap,Drawable>,int,int,int) in View
+class Game extends JFrame implements
+^
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/topViewDE/modelHeightMap/Main.java:17: error: Game is not abstract and does not override abstract method drawCell(Viewport<ModelMap,Drawable>,int,int,int) in View
+class Game extends JFrame implements
+^
+/Users/Dylan/Dropbox/School/engr489/MarcoDependencyExtraction/MVC0/src/main/java/topViewDE/game0/Game.java:17: error: Game is not abstract and does not override abstract method drawCell(Viewport<ModelMap,Drawable>,int,int,int) in View
+public class Game extends JFrame implements
+       ^
+7 errors
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 1s
+2 actionable tasks: 2 executed
 */
